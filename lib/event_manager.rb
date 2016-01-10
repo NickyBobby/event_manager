@@ -10,11 +10,6 @@ end
 
 def legislators_by_zipcode(zipcode)
   legislators = Sunlight::Congress::Legislator.by_zipcode(zipcode)
-
-  legislator_names = legislators.collect do |legislator|
-    "#{legislator.first_name} #{legislator.last_name}"
-  end
-  legislators.join(", ")
 end
 
 puts "EventManager Initialized!"
@@ -30,12 +25,7 @@ contents.each do |row|
 
   legislators = legislators_by_zipcode(zipcode)
 
-  # personal_letter = template_letter.gsub('FIRST_NAME', name)
-  # personal_letter.gsub!('LEGISLATORS', legislators)
   form_letter = erb_template.result(binding)
 
   puts form_letter
-
-
-  # puts "#{name} #{zipcode} #{legislators}"
 end
