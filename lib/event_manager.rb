@@ -1,6 +1,7 @@
 require 'csv'
 require 'sunlight/congress'
 require 'erb'
+require 'pry'
 
 Sunlight::Congress.api_key = "e179a6973728c4dd3fb1204283aaccb5"
 
@@ -9,11 +10,12 @@ def clean_zipcode(zipcode)
 end
 
 def clean_phone_number(phone_number)
-  if phone_number < 10
+  phone_number = phone_number.to_s.delete('-()-+ ')
+  if phone_number.length < 10
     phone_number = "bad number"
-  elsif phone_number == 10
-    phone_number
-  elsif phone_number == 11
+  elsif phone_number.length == 10
+    return phone_number
+  elsif phone_number.length == 11
     if phone_number[0] == 1
       phone_number = phone_number.to_s
       phone_number[0] = ''
@@ -24,7 +26,6 @@ def clean_phone_number(phone_number)
   else
 
   end
-
 end
 
 def legislators_by_zipcode(zipcode)
@@ -52,7 +53,7 @@ contents.each do |row|
   id = row[0]
   name = row[:first_name]
 
-  phone_number = row[:homephone]
+  phone_number = clean_phone_number(row[:homephone])
 
   zipcode = clean_zipcode(row[:zipcode])
 
@@ -60,6 +61,6 @@ contents.each do |row|
 
   form_letter = erb_template.result(binding)
 
-  save_thank_you_letters(id, form_letter)
+  # save_thank_you_letters(id, form_letter)
   puts form_letter
 end
